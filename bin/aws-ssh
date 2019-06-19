@@ -1,0 +1,10 @@
+#!/bin/bash
+
+INVENTORY=$(aws ssm get-inventory --filters "Key=AWS:InstanceInformation.InstanceStatus,Values=Terminated,Type=NotEqual" --query "Entities[].Id[]" --output text)
+
+EC2=$(aws ec2 describe-instances --instance-ids ${INVENTORY} --query 'Reservations[].Instances[*].{Id:InstanceId,Name:Tags[?Key==`Name`].Value}|[].{Id:Id, Name:Name[0]} | [][]' --output text |peco)
+
+INSTANCE_ID=$(echo ${EC2} | awk -F" " '{print $1}')
+
+aws ssm start-session --target ${INSTANCE_ID}
+
