@@ -5,7 +5,7 @@ class AwsSsh < Formula
   desc "AWS SSH using Session Manager"
   homepage "https://github.com/3-shake/homebrew-aws-ssh"
   url "https://github.com/3-shake/homebrew-aws-ssh.git",
-    :tag      => "v0.1"
+    :tag      => "v0.2"
   depends_on "peco"
 
   def install
