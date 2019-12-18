@@ -1,6 +1,11 @@
 #!/bin/bash
 
-INVENTORY=$(aws ssm get-inventory --filters "Key=AWS:InstanceInformation.InstanceStatus,Values=Terminated,Type=NotEqual" --query "Entities[].Id[]" --output text)
+INVENTORY=$(aws ssm get-inventory \
+            --filters \
+                "Key=AWS:InstanceInformation.InstanceStatus,Values=Terminated,Type=NotEqual" \
+                "Key=AWS:InstanceInformation.InstanceId,Values=i-,Type=BeginWith" \
+            --query "Entities[].Id[]" \
+            --output text)
 
 EC2=$(aws ec2 describe-instances --instance-ids ${INVENTORY} --query 'Reservations[].Instances[*].{Id:InstanceId,Name:Tags[?Key==`Name`].Value,DNS:PrivateDnsName}|[].{Id:Id, Name:Name[0], DNS:DNS} | [][]' --output text |peco)
 
